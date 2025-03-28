@@ -4,7 +4,7 @@ import { _getUsers } from "@/server";
 import { login } from "@/store/auth/auth.reducer";
 import { User } from "@/@types";
 import { useAppDispatch } from "@/store/hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const LoginPage = () => {
   const [userInputValue, setUserInputValue] = useState("");
@@ -12,6 +12,9 @@ export const LoginPage = () => {
   const [users, setUsers] = useState<Awaited<
     ReturnType<typeof _getUsers>
   > | null>(null);
+
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
 
   const navigate = useNavigate();
 
@@ -53,11 +56,11 @@ export const LoginPage = () => {
     const user = users[userInputValue as keyof typeof users] as User;
 
     dispatch(login(user));
-    navigate("/");
+    navigate(redirect ? redirect : "/");
   };
 
   return (
-    <section>
+    <section className="mt-20">
       <h1 className="text-center text-xl font-bold">Log In</h1>
 
       <form className="flex flex-col gap-4 text-center" onSubmit={onSubmit}>

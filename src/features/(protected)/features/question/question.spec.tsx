@@ -1,7 +1,6 @@
 import "@testing-library/jest-dom";
 import { QuestionPage } from "./";
 import { renderWithProviders } from "@/store/test-provider";
-import { MemoryRouter, Route, Routes } from "react-router";
 import * as redux from "@/store/hooks";
 
 const preloadedState = {
@@ -70,12 +69,10 @@ describe("QuestionPage Vote Percentages", () => {
     jest.spyOn(redux, "useAppDispatch").mockImplementation(() => jest.fn());
 
     const { getByTestId } = renderWithProviders(
-      <MemoryRouter initialEntries={["/questions/q1"]}>
-        <Routes>
-          <Route path="/questions/:questionId" element={<QuestionPage />} />
-        </Routes>
-      </MemoryRouter>,
-      { preloadedState: preloadedState as any }
+      <QuestionPage />,
+      { preloadedState: preloadedState as any },
+      ["/questions/q1"],
+      "/questions/:questionId"
     );
 
     const optionOne = getByTestId("total-option-one");
@@ -83,5 +80,14 @@ describe("QuestionPage Vote Percentages", () => {
 
     expect(optionOne).toHaveTextContent("40");
     expect(optionTwo).toHaveTextContent("60");
+  });
+  test("matches snapshot", () => {
+    const { asFragment } = renderWithProviders(
+      <QuestionPage />,
+      { preloadedState: preloadedState as any },
+      ["/questions/q1"],
+      "/questions/:questionId"
+    );
+    expect(asFragment()).toMatchSnapshot();
   });
 });

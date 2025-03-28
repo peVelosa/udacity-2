@@ -1,4 +1,5 @@
 import { User } from "@/@types";
+import { NotFoundPage } from "@/components/not-found";
 import { _getUsers, _saveQuestionAnswer } from "@/server/_DATA";
 import { login } from "@/store/auth/auth.reducer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -106,6 +107,10 @@ export const QuestionPage = () => {
     await dispatch(fetchQuestionById(params.questionId));
   };
 
+  if (!isLoadingQuestions && !selectedQuestion) {
+    return <NotFoundPage />;
+  }
+
   if (isLoadingQuestions || !selectedQuestion) {
     return <section>Loading...</section>;
   }
@@ -132,7 +137,7 @@ export const QuestionPage = () => {
       <h2 className="text-xl font-bold text-center">Would you rather</h2>
       {hasVoted && (
         <p className="text-center text-lg font-semibold">
-          You have voted for{" "}
+          You voted for{" "}
           {OPTIONS[authUser?.answers[selectedQuestion.question.id]]}
         </p>
       )}

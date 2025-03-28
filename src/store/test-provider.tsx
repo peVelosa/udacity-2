@@ -3,6 +3,7 @@ import { render } from "@testing-library/react";
 import type { RenderOptions } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { RootState, AppStore, setupStore } from ".";
+import { MemoryRouter, Routes, Route, InitialEntry } from "react-router";
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, "queries"> {
   preloadedState?: Partial<RootState>;
@@ -11,7 +12,9 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, "queries"> {
 
 export function renderWithProviders(
   ui: React.ReactElement,
-  extendedRenderOptions: ExtendedRenderOptions = {}
+  extendedRenderOptions: ExtendedRenderOptions = {},
+  initialEntries: InitialEntry[],
+  path: string
 ) {
   const {
     preloadedState = {},
@@ -20,7 +23,14 @@ export function renderWithProviders(
   } = extendedRenderOptions;
 
   const Wrapper = ({ children }: PropsWithChildren) => (
-    <Provider store={store}>{children}</Provider>
+    <Provider store={store}>
+      <MemoryRouter initialEntries={initialEntries}>
+        <Routes>
+          <Route path={path} element={children} />
+        </Routes>
+      </MemoryRouter>
+      ,
+    </Provider>
   );
 
   return {

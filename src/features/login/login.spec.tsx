@@ -6,7 +6,12 @@ import * as server from "@/server";
 
 describe("LoginPage", () => {
   test("should render the login page", () => {
-    const { getByTestId } = renderWithProviders(<LoginPage />);
+    const { getByTestId } = renderWithProviders(
+      <LoginPage />,
+      {},
+      ["/login"],
+      "/login"
+    );
     const user = getByTestId("user-field");
     const password = getByTestId("password-field");
     const button = getByTestId("submit-button");
@@ -22,24 +27,35 @@ describe("LoginPage", () => {
 
     const alertSpy = jest.spyOn(window, "alert").mockImplementation(() => {});
 
-    const { getByTestId } = renderWithProviders(<LoginPage />);
-    const userField = getByTestId("user-field");
-    const passwordField = getByTestId("password-field");
-    const submitButton = getByTestId("submit-button");
-
-    fireEvent.change(userField, { target: { value: "wronguser" } });
-    fireEvent.change(passwordField, { target: { value: "wrongpass" } });
-
-    fireEvent.click(submitButton);
+    const { getByTestId } = renderWithProviders(
+      <LoginPage />,
+      {},
+      ["/login"],
+      "/login"
+    );
 
     await waitFor(() => {
+      const userField = getByTestId("user-field");
+      const passwordField = getByTestId("password-field");
+      const submitButton = getByTestId("submit-button");
+
+      fireEvent.change(userField, { target: { value: "wronguser" } });
+      fireEvent.change(passwordField, { target: { value: "wrongpass" } });
+
+      fireEvent.click(submitButton);
+
       expect(alertSpy).toHaveBeenCalledWith("User not found");
     });
 
     alertSpy.mockRestore();
   });
   test("login button should be disabled with any empty field", () => {
-    const { getByTestId } = renderWithProviders(<LoginPage />);
+    const { getByTestId } = renderWithProviders(
+      <LoginPage />,
+      {},
+      ["/login"],
+      "/login"
+    );
     const user = getByTestId("user-field");
     const password = getByTestId("password-field");
     const button = getByTestId("submit-button");
@@ -52,5 +68,14 @@ describe("LoginPage", () => {
 
     fireEvent.change(password, { target: { value: "wrongpass" } });
     expect(button).toBeEnabled();
+  });
+  test("matches snapshot", () => {
+    const { asFragment } = renderWithProviders(
+      <LoginPage />,
+      {},
+      ["/login"],
+      "/login"
+    );
+    expect(asFragment()).toMatchSnapshot();
   });
 });
