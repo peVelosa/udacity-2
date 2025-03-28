@@ -9,7 +9,7 @@ export const HomePage = () => {
   );
 
   const [selectedView, setSelectedView] = useState<"unanswered" | "answered">(
-    "answered"
+    "unanswered"
   );
 
   const { user } = useAppSelector((state) => state.auth);

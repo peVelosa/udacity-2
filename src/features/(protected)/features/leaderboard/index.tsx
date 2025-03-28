@@ -19,6 +19,15 @@ export const LeaderBoardPage = () => {
     return <section>{error}</section>;
   }
 
+  const usersSorted = [
+    ...users?.toSorted(
+      (a, b) =>
+        Object.entries(b.answers ?? {}).length +
+        b.questions.length -
+        (Object.entries(a.answers ?? {}).length + a.questions.length)
+    ),
+  ];
+
   return (
     <section>
       <div className="overflow-x-auto">
@@ -46,7 +55,7 @@ export const LeaderBoardPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((user: User) => (
+            {usersSorted.map((user: User) => (
               <tr key={user.id} className="hover:bg-gray-100">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
